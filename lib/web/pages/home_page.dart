@@ -1,411 +1,336 @@
-import 'package:balance_web/web/constants/colors.dart';
-import 'package:balance_web/web/widgets/app_button.dart';
-import 'package:balance_web/web/widgets/feature_card.dart';
-import 'package:balance_web/web/widgets/footer.dart';
-import 'package:balance_web/web/widgets/screenshot_card.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+import '../constants/colors.dart';
+import '../widgets/app_bar.dart';
+import '../widgets/footer.dart';
+
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _slideAnimation;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0, 0.5, curve: Curves.easeOut),
+      ),
+    );
+    _slideAnimation = Tween<double>(begin: 50, end: 0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.3, 1, curve: Curves.easeOut),
+      ),
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _navigateTo(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    final routes = ['/home', '/products', '/values', '/about', '/contact'];
+    if (index < routes.length) {
+      Navigator.pushNamed(context, routes[index]);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      extendBodyBehindAppBar: true,
+      appBar: BalanceAppBar(
+        isTransparent: true,
+        currentIndex: _currentIndex,
+        onItemTapped: _navigateTo,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Navigation Bar
-            _buildNavBar(context),
-
             // Hero Section
-            _buildHeroSection(),
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: BalanceColors.websiteGradient,
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            BalanceColors.backgroundDark.withOpacity(0.8),
+                            BalanceColors.surfaceDark.withOpacity(0.9),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
+                  ),
 
-            // Screenshots
-            _buildScreenshotsSection(),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(0, _slideAnimation.value),
+                            child: Opacity(
+                              opacity: _fadeAnimation.value,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: BalanceColors.ledgerPrimary
+                                      .withOpacity(0.2),
+                                ),
+                              ),
+                              child: Text(
+                                'DIGITAL WELLNESS REDEFINED',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: BalanceColors.ledgerSecondary,
+                                      letterSpacing: 2,
+                                    ),
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+                            Text(
+                              'Balance Your Digital\n& Real World',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.displayLarge
+                                  ?.copyWith(
+                                    foreground: Paint()
+                                      ..shader =
+                                          const LinearGradient(
+                                            colors: [
+                                              Colors.white,
+                                              BalanceColors.textSecondary,
+                                            ],
+                                          ).createShader(
+                                            const Rect.fromLTWH(0, 0, 500, 100),
+                                          ),
+                                  ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'A suite of apps designed to restore harmony between your\n digital life and personal well-being through mindful technology.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: BalanceColors.textSecondary,
+                                  ),
+                            ),
+                            const SizedBox(height: 48),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Balance: Life Ledger CTA
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () => _navigateTo(1),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 32,
+                                        vertical: 18,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        gradient: BalanceColors.ledgerGradient,
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: BalanceColors.ledgerPrimary
+                                                .withOpacity(0.4),
+                                            blurRadius: 20,
+                                            spreadRadius: 0,
+                                            offset: const Offset(0, 10),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.auto_graph_rounded,
+                                            color: Colors.white,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            'Life Ledger',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium
+                                                ?.copyWith(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Icon(
+                                            Icons.arrow_forward_rounded,
+                                            size: 20,
+                                            color: Colors.white,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 24),
+                                // Balance: Focus Restore CTA
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () => _navigateTo(1),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 32,
+                                        vertical: 18,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: BalanceColors.surfaceDark,
+                                        borderRadius: BorderRadius.circular(16),
+                                        border: Border.all(
+                                          color: BalanceColors.focusPrimary
+                                              .withOpacity(0.3),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.psychology_rounded,
+                                            color: BalanceColors.focusPrimary,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            'Focus Restore',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium
+                                                ?.copyWith(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Icon(
+                                            Icons.arrow_forward_rounded,
+                                            size: 20,
+                                            color: BalanceColors.focusPrimary,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-            // Features
-            _buildFeaturesSection(),
+            // Products Preview Section
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                vertical: 120,
+                horizontal: 32,
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Our Digital Wellness Suite',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.displaySmall?.copyWith(color: Colors.white),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Two complementary apps designed to work together',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: BalanceColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 64),
+                  // Products will be shown in ProductsPage
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => _navigateTo(1),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Text(
+                          'View All Products →',
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-            // Download CTA
-            _buildDownloadSection(),
-
-            // Footer
             const Footer(),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildNavBar(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Logo
-          Row(
-            children: [
-              Container(
-                height: 32,
-                width: 32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.2),
-                      blurRadius: 40,
-                      spreadRadius: 5,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: Image.asset(
-                    'assets/logo.png', // Add your mockup image
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Balance: Life Ledger',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-
-          const Spacer(),
-
-          // Navigation Links
-          Row(
-            children: [
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  'Home',
-                  style: TextStyle(color: AppColors.textPrimary),
-                ),
-              ),
-              const SizedBox(width: 24),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/features');
-                },
-                child: Text(
-                  'Features',
-                  style: TextStyle(color: AppColors.textSecondary),
-                ),
-              ),
-              const SizedBox(width: 24),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/privacy');
-                },
-                child: Text(
-                  'Privacy',
-                  style: TextStyle(color: AppColors.textSecondary),
-                ),
-              ),
-              const SizedBox(width: 24),
-              AppButton(
-                text: 'Download',
-                onPressed: _handleDownload,
-                type: ButtonType.primary,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeroSection() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-      constraints: const BoxConstraints(maxWidth: 1200),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left Column - Text
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Find Your Daily Harmony',
-                  style: TextStyle(
-                    fontSize: 56,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Balance: Life Ledger helps you track work, family, and self-care through structured evening journaling. Build better habits, see your life balance, and maintain consistency with our 24-hour journaling system.',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: AppColors.textSecondary,
-                    height: 1.6,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Row(
-                  children: [
-                    AppButton(
-                      text: 'Download on App Store',
-                      onPressed: () => _openAppStore(),
-                      icon: Icons.apple,
-                      type: ButtonType.primary,
-                    ),
-                    const SizedBox(width: 16),
-                    AppButton(
-                      text: 'Get it on Google Play',
-                      onPressed: () => _openPlayStore(),
-                      icon: Icons.android,
-                      type: ButtonType.secondary,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Coming soon to web',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Right Column - Mockup
-          const SizedBox(width: 80),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.2),
-                    blurRadius: 40,
-                    spreadRadius: 5,
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: Image.asset(
-                  'assets/logo.png', // Add your mockup image
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildScreenshotsSection() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80),
-      color: AppColors.surface,
-      child: Column(
-        children: [
-          Text(
-            'Simple, Beautiful Interface',
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Designed for focus and clarity',
-            style: TextStyle(fontSize: 18, color: AppColors.textSecondary),
-          ),
-          const SizedBox(height: 48),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              children: [
-                ScreenshotCard(
-                  image: 'assets/screen1.png',
-                  title: 'Daily Entry',
-                  description: 'Track work, family, self-care priorities',
-                ),
-                const SizedBox(width: 24),
-                ScreenshotCard(
-                  image: 'assets/screen2.png',
-                  title: 'Mood & Reflection',
-                  description: 'Rate your day and add gratitude',
-                ),
-                const SizedBox(width: 24),
-                ScreenshotCard(
-                  image: 'assets/screen3.png',
-                  title: 'Balance Dashboard',
-                  description: 'Visualize your life equilibrium',
-                ),
-                const SizedBox(width: 24),
-                ScreenshotCard(
-                  image: 'assets/screen4.png',
-                  title: 'Past Entries',
-                  description: 'Review your journal history',
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeaturesSection() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
-      constraints: const BoxConstraints(maxWidth: 1200),
-      child: Column(
-        children: [
-          Text(
-            'Why Choose Balance: Life Ledger?',
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 48),
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 3,
-            crossAxisSpacing: 24,
-            mainAxisSpacing: 24,
-            childAspectRatio: 1.2,
-            children: [
-              FeatureCard(
-                icon: Icons.lock_clock_outlined,
-                title: '24-Hour Journaling',
-                description: 'Entries lock after 24 hours to build consistency',
-                color: AppColors.primary,
-              ),
-              FeatureCard(
-                icon: Icons.pie_chart,
-                title: 'Balance Dashboard',
-                description: 'Visual charts show your work-life balance',
-                color: AppColors.work,
-              ),
-              FeatureCard(
-                icon: Icons.timeline_outlined,
-                title: 'Progress Tracking',
-                description: 'Track streaks, mood trends, and completion rates',
-                color: AppColors.success,
-              ),
-              FeatureCard(
-                icon: Icons.emoji_emotions_outlined,
-                title: 'Mood & Reflection',
-                description: 'Rate each life area and add gratitude',
-                color: AppColors.selfCare,
-              ),
-              FeatureCard(
-                icon: Icons.security_outlined,
-                title: 'Privacy First',
-                description: 'Your data is encrypted and never shared',
-                color: AppColors.info,
-              ),
-              FeatureCard(
-                icon: Icons.offline_bolt_outlined,
-                title: 'Offline Support',
-                description: 'Journal anywhere, syncs when online',
-                color: AppColors.warning,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDownloadSection() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.primary.withOpacity(0.1),
-            AppColors.secondary.withOpacity(0.1),
-          ],
-        ),
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Start Your Journey Today',
-            style: TextStyle(
-              fontSize: 42,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Join thousands finding better balance through daily reflection',
-            style: TextStyle(fontSize: 18, color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppButton(
-                text: 'Download on App Store',
-                onPressed: () => _openAppStore(),
-                icon: Icons.apple,
-                type: ButtonType.primary,
-                size: ButtonSize.large,
-              ),
-              const SizedBox(width: 24),
-              AppButton(
-                text: 'Get it on Google Play',
-                onPressed: () => _openPlayStore(),
-                icon: Icons.android,
-                type: ButtonType.secondary,
-                size: ButtonSize.large,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _handleDownload() {
-    // Scroll to download section
-  }
-
-  void _openAppStore() {
-    // Replace with your App Store URL
-    // launchUrl(Uri.parse('https://apps.apple.com/app/idYOUR_APP_ID'));
-  }
-
-  void _openPlayStore() {
-    // Replace with your Play Store URL
-    // launchUrl(Uri.parse('https://play.google.com/store/apps/details?id=com.yourapp.balance'));
   }
 }

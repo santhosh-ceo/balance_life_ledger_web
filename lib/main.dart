@@ -1,12 +1,14 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'app.dart';
 
 void main() {
-  if (kIsWeb) {
-    runApp(const BalanceWebsite());
-  } else {
-    runApp(const BalanceWebsite());
-  }
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Color(0xFF0A0A0A),
+    ),
+  );
+  runApp(const BalanceWebsite());
 }

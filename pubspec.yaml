@@ -10,8 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
-  url_launcher: ^6.2.1
+  cupertino_icons:
+  url_launcher: ^6.2.0
+  provider:
 
 dev_dependencies:
   flutter_test:
