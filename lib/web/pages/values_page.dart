@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/drawer.dart';
 import '../widgets/footer.dart';
 
 class ValuesPage extends StatefulWidget {
@@ -31,6 +32,10 @@ class _ValuesPageState extends State<ValuesPage> {
         isTransparent: true,
         currentIndex: _currentIndex,
         onItemTapped: _navigateTo,
+      ),
+      endDrawer: BalanceDrawer(
+        currentIndex: _currentIndex,
+        onNavigate: _navigateTo,
       ),
       body: SingleChildScrollView(
         child: Column(

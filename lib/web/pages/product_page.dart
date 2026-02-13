@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants/colors.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/drawer.dart';
 import '../widgets/footer.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -32,6 +33,10 @@ class _ProductsPageState extends State<ProductsPage> {
         isTransparent: true,
         currentIndex: _currentIndex,
         onItemTapped: _navigateTo,
+      ),
+      endDrawer: BalanceDrawer(
+        currentIndex: _currentIndex,
+        onNavigate: _navigateTo,
       ),
       body: SingleChildScrollView(
         child: Column(

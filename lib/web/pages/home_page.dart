@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/drawer.dart';
 import '../widgets/footer.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,6 +32,10 @@ class _HomePageState extends State<HomePage> {
         isTransparent: true,
         currentIndex: _currentIndex,
         onItemTapped: _navigateTo,
+      ),
+      endDrawer: BalanceDrawer(
+        currentIndex: _currentIndex,
+        onNavigate: _navigateTo,
       ),
       body: SingleChildScrollView(
         child: Column(

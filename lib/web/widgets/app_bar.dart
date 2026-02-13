@@ -47,10 +47,7 @@ class BalanceAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Logo Section
                 _buildLogo(context),
-
-                // Navigation
                 if (!isMobile)
                   Row(
                     children: [
@@ -86,13 +83,16 @@ class BalanceAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ],
                   )
                 else
-                  IconButton(
-                    icon: const Icon(
-                      Icons.menu_rounded,
-                      color: Colors.white,
-                      size: 30,
+                  // FIXED: Wrapped in Builder to provide the correct context for Scaffold.of
+                  Builder(
+                    builder: (context) => IconButton(
+                      icon: const Icon(
+                        Icons.menu_rounded,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      onPressed: () => Scaffold.of(context).openEndDrawer(),
                     ),
-                    onPressed: () => Scaffold.of(context).openEndDrawer(),
                   ),
               ],
             ),
@@ -109,20 +109,15 @@ class BalanceAppBar extends StatelessWidget implements PreferredSizeWidget {
         onTap: onLogoPressed ?? () => Navigator.pushNamed(context, '/home'),
         child: Row(
           children: [
-            Hero(
-              tag: 'logo',
-              child: Image.asset('assets/logo.png', height: 35, width: 35),
-            ),
+            Image.asset('assets/ledger_logo.png', height: 35, width: 35),
             const SizedBox(width: 12),
             Text(
-              'BALANCE LABS',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              'BALANCE',
+              style: TextStyle(
+                color: Colors.white,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 3,
-                foreground: Paint()
-                  ..shader = BalanceColors.ledgerGradient.createShader(
-                    const Rect.fromLTWH(0, 0, 200, 70),
-                  ),
+                fontSize: 20,
               ),
             ),
           ],
@@ -132,44 +127,16 @@ class BalanceAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _buildContactBtn(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: BalanceColors.focusPrimary.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 4),
-          ),
-        ],
+    return ElevatedButton(
+      onPressed: () => onItemTapped(4),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: BalanceColors.focusPrimary,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      child: ElevatedButton(
-        onPressed: () => onItemTapped(4),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ).copyWith(elevation: ButtonStyleButton.allOrNull(0)),
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: BalanceColors.focusGradient,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Container(
-            constraints: const BoxConstraints(minWidth: 100, minHeight: 45),
-            alignment: Alignment.center,
-            child: const Text(
-              'Contact',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
+      child: const Text(
+        'Contact',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -195,26 +162,11 @@ class _NavItem extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: isSelected
-                    ? BalanceColors.ledgerSecondary
-                    : Colors.transparent,
-                width: 2,
-              ),
-            ),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : BalanceColors.textSecondary,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              fontSize: 15,
-            ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.white54,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
       ),
