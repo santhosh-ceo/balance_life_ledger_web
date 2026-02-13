@@ -1,6 +1,5 @@
-// pages/terms_page.dart
+import 'dart:ui';
 import 'package:flutter/material.dart';
-
 import '../constants/colors.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/footer.dart';
@@ -16,185 +15,80 @@ class _TermsPageState extends State<TermsPage> {
   int _currentIndex = 0;
 
   void _navigateTo(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    setState(() => _currentIndex = index);
     final routes = ['/home', '/products', '/values', '/about', '/contact'];
-    if (index < routes.length) {
-      Navigator.pushNamed(context, routes[index]);
-    }
+    if (index < routes.length) Navigator.pushNamed(context, routes[index]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 900;
+
     return Scaffold(
+      backgroundColor: BalanceColors.backgroundDark,
+      extendBodyBehindAppBar: true,
       appBar: BalanceAppBar(
+        isTransparent: true,
         currentIndex: _currentIndex,
         onItemTapped: _navigateTo,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Hero Section
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 32),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    BalanceColors.backgroundDark,
-                    BalanceColors.surfaceDark,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Terms & Conditions',
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Last Updated: January 27, 2026',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: BalanceColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // --- PREMIUM HERO (Mirrors Privacy) ---
+            _buildHero(isMobile),
 
-            // Content
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 32),
-              constraints: const BoxConstraints(maxWidth: 1000),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _Section(
-                    title: '1. Acceptance of Terms',
-                    content:
-                    'By downloading, installing, or using the Balance: Life Ledger and Balance: Focus Restore applications ("Apps"), you agree to be bound by these Terms & Conditions. If you do not agree to these terms, please do not use our Apps.',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '2. Services Description',
-                    content:
-                    'Balance provides digital wellness applications that help users track their daily reflections, build focus habits, and improve overall well-being. Our services include:\n\n'
-                        '• Daily journaling and habit tracking (Life Ledger)\n'
-                        '• Focus improvement exercises and challenges (Focus Restore)\n'
-                        '• Data visualization and insights\n'
-                        '• Push notifications for reminders\n'
-                        '• Cloud synchronization via Firebase',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '3. Account Registration',
-                    content:
-                    'To use certain features of our Apps, you may need to register for an account. You must provide accurate and complete information. You are responsible for maintaining the confidentiality of your account credentials.',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '4. Subscription & Payments',
-                    content:
-                    'Balance offers both free and premium subscription models:\n\n'
-                        '• Free tier includes core features with optional ads\n'
-                        '• Premium subscription removes ads and unlocks advanced features\n'
-                        '• Subscription automatically renews unless canceled 24 hours before renewal\n'
-                        '• Payments are processed through Google Play Store or Apple App Store\n'
-                        '• All purchases are non-refundable except as required by law',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '5. User Content & Data',
-                    content:
-                    'You retain ownership of all content you create within our Apps (journal entries, goals, etc.). By using our Apps, you grant us a license to store, process, and display this content to provide our services.\n\n'
-                        'We implement appropriate technical measures to protect your data, but we cannot guarantee absolute security.',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '6. Acceptable Use',
-                    content:
-                    'You agree not to:\n\n'
-                        '• Use the Apps for any illegal purpose\n'
-                        '• Attempt to reverse engineer or hack our systems\n'
-                        '• Share accounts or use automated means to access services\n'
-                        '• Upload malicious content or spam\n'
-                        '• Violate any applicable laws or regulations',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '7. Intellectual Property',
-                    content:
-                    'All intellectual property rights in the Apps, including but not limited to trademarks, logos, designs, and source code, are owned by Balance Digital Wellness. You are granted a limited, non-exclusive license to use the Apps for personal, non-commercial purposes.',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '8. Termination',
-                    content:
-                    'We may terminate or suspend your access to our Apps immediately, without prior notice, for conduct that we believe violates these Terms or is harmful to other users.',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '9. Limitation of Liability',
-                    content:
-                    'To the maximum extent permitted by law, Balance Digital Wellness shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use the Apps.',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '10. Changes to Terms',
-                    content:
-                    'We reserve the right to modify these Terms at any time. We will notify users of material changes through in-app notifications or email. Continued use of the Apps after changes constitutes acceptance.',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '11. Governing Law',
-                    content:
-                    'These Terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions.',
-                  ),
-                  const SizedBox(height: 40),
-                  _Section(
-                    title: '12. Contact Information',
-                    content:
-                    'For questions about these Terms, please contact us at:\n\n'
-                        'Email: legal@balancedigitalwellness.com\n'
-                        'Address: Balance Digital Wellness, Bengaluru, India',
-                  ),
-                  const SizedBox(height: 60),
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.1),
-                      ),
+            // --- TERMS SUMMARY SCORECARD ---
+            _buildScorecard(isMobile),
+
+            // --- MAIN CONTENT ---
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 20 : 80,
+                vertical: 60,
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1100),
+                child: Column(
+                  children: [
+                    _TermsCard(
+                      number: "01",
+                      title: 'Digital Agreement',
+                      content:
+                          'By accessing Balance: Life Ledger, Focus Restore, or Wealth Tracker, you enter into a binding agreement with Balance Digital Wellness. These terms govern your journey toward digital equilibrium.',
                     ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.info_outline_rounded,
-                          color: BalanceColors.ledgerPrimary,
-                          size: 24,
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            'These Terms & Conditions apply to both Balance: Life Ledger and Balance: Focus Restore applications.',
-                            style:
-                            Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: BalanceColors.textSecondary,
-                            ),
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 32),
+                    _TermsCard(
+                      number: "02",
+                      title: 'The Service Ecosystem',
+                      content:
+                          'We provide tools for reflection, focus, and wealth tracking. Note: The Wealth Tracker is a data visualization tool. We provide categories (Food, Rent, Fuel, etc.) for your organization, but we do not provide professional financial or investment advice.',
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 32),
+                    _TermsCard(
+                      number: "03",
+                      title: 'Subscriptions & Premium',
+                      content:
+                          'Premium features are processed via the Apple App Store or Google Play Store. Subscriptions auto-renew unless toggled off 24 hours before the period ends. We maintain a transparent "No Hidden Fees" policy.',
+                    ),
+                    const SizedBox(height: 32),
+                    _TermsCard(
+                      number: "04",
+                      title: 'Usage Constraints',
+                      content:
+                          'You agree to use our services for personal growth. Reverse engineering our "Focus" algorithms or attempting to bypass our "Life Ledger" security measures is strictly prohibited and results in immediate account termination.',
+                    ),
+                    const SizedBox(height: 32),
+                    _TermsCard(
+                      number: "05",
+                      title: 'Intellectual Property',
+                      content:
+                          'All code, design systems, and the "Balance" brand identity are the exclusive property of Balance Labs. Your journal entries and wealth data remain 100% yours; we only provide the canvas.',
+                    ),
+                    const SizedBox(height: 80),
+                    _buildLegalFooter(),
+                  ],
+                ),
               ),
             ),
             const Footer(showLegalLinks: false),
@@ -203,35 +97,209 @@ class _TermsPageState extends State<TermsPage> {
       ),
     );
   }
+
+  Widget _buildHero(bool isMobile) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(24, isMobile ? 120 : 180, 24, 60),
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: const Alignment(-0.8, -0.5),
+          radius: 1.2,
+          colors: [
+            BalanceColors.focusPrimary.withOpacity(0.1),
+            Colors.transparent,
+          ],
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: BalanceColors.focusPrimary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(
+                color: BalanceColors.focusPrimary.withOpacity(0.2),
+              ),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.gavel_rounded,
+                  color: BalanceColors.focusPrimary,
+                  size: 14,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  "USER AGREEMENT",
+                  style: TextStyle(
+                    color: BalanceColors.focusPrimary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            "Terms of Service",
+            style: TextStyle(
+              fontSize: isMobile ? 42 : 72,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            "Effective Date: February 2026 • Bengaluru, India",
+            style: TextStyle(color: Colors.white38, fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScorecard(bool isMobile) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 80),
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: BalanceColors.surfaceDark.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Wrap(
+        spacing: 40,
+        runSpacing: 32,
+        alignment: WrapAlignment.center,
+        children: [
+          _ScoreItem(
+            icon: Icons.account_balance_wallet_outlined,
+            label: "Not Financial Advice",
+          ),
+          _ScoreItem(icon: Icons.refresh_rounded, label: "Auto-Renewable"),
+          _ScoreItem(
+            icon: Icons.assignment_ind_outlined,
+            label: "Personal Use Only",
+          ),
+          _ScoreItem(
+            icon: Icons.copyright_rounded,
+            label: "All Rights Reserved",
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegalFooter() {
+    return Container(
+      padding: const EdgeInsets.all(40),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.02),
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.info_outline, color: BalanceColors.focusPrimary),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(
+              "Questions about our legal framework? Reach out to legal@balancedigitalwellness.com",
+              style: TextStyle(
+                color: BalanceColors.textSecondary,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _Section extends StatelessWidget {
-  final String title;
-  final String content;
-
-  const _Section({
+class _TermsCard extends StatelessWidget {
+  final String number, title, content;
+  const _TermsCard({
+    required this.number,
     required this.title,
     required this.content,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
+    return Container(
+      padding: const EdgeInsets.all(40),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.02),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            number,
+            style: TextStyle(
+              color: BalanceColors.focusPrimary.withOpacity(0.5),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Courier',
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(width: 32),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  content,
+                  style: TextStyle(
+                    color: BalanceColors.textSecondary,
+                    fontSize: 17,
+                    height: 1.6,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ScoreItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _ScoreItem({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, color: BalanceColors.focusPrimary, size: 32),
+        const SizedBox(height: 12),
         Text(
-          content,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Colors.white.withOpacity(0.8),
-            height: 1.6,
+          label,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],

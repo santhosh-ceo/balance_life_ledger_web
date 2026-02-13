@@ -1,4 +1,4 @@
-// pages/values_page.dart (Add legal values section)
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../widgets/app_bar.dart';
@@ -15,274 +15,201 @@ class _ValuesPageState extends State<ValuesPage> {
   int _currentIndex = 2;
 
   void _navigateTo(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    setState(() => _currentIndex = index);
     final routes = ['/home', '/products', '/values', '/about', '/contact'];
-    if (index < routes.length) {
-      Navigator.pushNamed(context, routes[index]);
-    }
+    if (index < routes.length) Navigator.pushNamed(context, routes[index]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 800;
+
     return Scaffold(
+      backgroundColor: BalanceColors.backgroundDark,
+      extendBodyBehindAppBar: true,
       appBar: BalanceAppBar(
+        isTransparent: true,
         currentIndex: _currentIndex,
         onItemTapped: _navigateTo,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Hero Section
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 120,
-                horizontal: 32,
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    BalanceColors.backgroundDark,
-                    BalanceColors.surfaceDark,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Our Values',
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      foreground: Paint()
-                        ..shader = const LinearGradient(
-                          colors: [
-                            BalanceColors.ledgerPrimary,
-                            BalanceColors.focusPrimary,
-                          ],
-                        ).createShader(const Rect.fromLTWH(0, 0, 300, 70)),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: 800,
-                    child: Text(
-                      'The principles that guide everything we build',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: BalanceColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // --- MANIFESTO HERO ---
+            _buildManifestoHero(isMobile),
 
-            // Core Values
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 32),
-              constraints: const BoxConstraints(maxWidth: 1200),
-              child: Column(
-                children: [
-                  // Add this new section for legal values
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 80),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Privacy & Security Commitment',
-                          style: Theme.of(context).textTheme.displaySmall
-                              ?.copyWith(color: Colors.white),
-                        ),
-                        const SizedBox(height: 40),
-                        Wrap(
-                          spacing: 32,
-                          runSpacing: 32,
-                          children: [
-                            _ValueCard(
-                              icon: Icons.lock_rounded,
-                              title: 'Data Protection',
-                              description:
-                                  'We encrypt all user data and implement industry-standard security measures.',
-                              color: BalanceColors.ledgerPrimary,
-                            ),
-                            _ValueCard(
-                              icon: Icons.gpp_good_rounded,
-                              title: 'Transparent Policies',
-                              description:
-                                  'Clear privacy policy and terms that prioritize user rights and control.',
-                              color: BalanceColors.focusPrimary,
-                            ),
-                            _ValueCard(
-                              icon: Icons.visibility_off_rounded,
-                              title: 'Minimal Data Collection',
-                              description:
-                                  'We only collect what\'s necessary to provide our services effectively.',
-                              color: BalanceColors.ledgerSecondary,
-                            ),
-                            _ValueCard(
-                              icon: Icons.delete_sweep_rounded,
-                              title: 'Right to Delete',
-                              description:
-                                  'Users can delete their account and all associated data at any time.',
-                              color: BalanceColors.focusSecondary,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 40),
-                        Container(
-                          padding: const EdgeInsets.all(32),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                BalanceColors.ledgerPrimary.withOpacity(0.1),
-                                BalanceColors.focusPrimary.withOpacity(0.05),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: BalanceColors.ledgerPrimary.withOpacity(
-                                0.2,
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.balance_rounded,
-                                color: BalanceColors.ledgerPrimary,
-                                size: 32,
-                              ),
-                              const SizedBox(width: 24),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Legal Compliance',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium
-                                          ?.copyWith(color: Colors.white),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'Our apps comply with:\n\n'
-                                      '• Google Play Store Developer Policies\n'
-                                      '• Apple App Store Guidelines\n'
-                                      '• GDPR Data Protection Principles\n'
-                                      '• Local Privacy Regulations\n'
-                                      '• Advertising Platform Requirements',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge
-                                          ?.copyWith(
-                                            color: Colors.white.withOpacity(
-                                              0.8,
-                                            ),
-                                            height: 1.6,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 24),
-                                    Row(
-                                      children: [
-                                        MouseRegion(
-                                          cursor: SystemMouseCursors.click,
-                                          child: GestureDetector(
-                                            onTap: () => Navigator.pushNamed(
-                                              context,
-                                              '/privacy',
-                                            ),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 24,
-                                                    vertical: 12,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color: BalanceColors
-                                                    .ledgerPrimary
-                                                    .withOpacity(0.2),
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                  color: BalanceColors
-                                                      .ledgerPrimary,
-                                                ),
-                                              ),
-                                              child: Text(
-                                                'Privacy Policy',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge
-                                                    ?.copyWith(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 16),
-                                        MouseRegion(
-                                          cursor: SystemMouseCursors.click,
-                                          child: GestureDetector(
-                                            onTap: () => Navigator.pushNamed(
-                                              context,
-                                              '/terms',
-                                            ),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 24,
-                                                    vertical: 12,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color: Colors.transparent,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                  color: Colors.white
-                                                      .withOpacity(0.3),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                'Terms & Conditions',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge
-                                                    ?.copyWith(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+            // --- GLOBAL IMPACT SECTION ---
+            _buildImpactSection(isMobile),
 
-                  // Existing core values...
-                ],
-              ),
-            ),
+            // --- LEGAL & PRIVACY VAULT ---
+            _buildPrivacyVault(isMobile),
+
             const Footer(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildManifestoHero(bool isMobile) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(24, isMobile ? 120 : 200, 24, 100),
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: const Alignment(-0.6, -0.5),
+          radius: 1.0,
+          colors: [
+            BalanceColors.focusPrimary.withOpacity(0.08),
+            Colors.transparent,
+          ],
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(
+            "The Mindful Tech Manifesto",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: isMobile ? 40 : 72,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: -1,
+            ),
+          ),
+          const SizedBox(height: 32),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 900),
+            child: Text(
+              "At Balance Labs, we believe that technology should be a quiet servant, not a loud master. Our values are etched into every line of code, ensuring that your digital experience nourishes your well-being.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: isMobile ? 18 : 22,
+                color: BalanceColors.textSecondary,
+                height: 1.6,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImpactSection(bool isMobile) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: 80,
+        horizontal: isMobile ? 24 : 60,
+      ),
+      child: Column(
+        children: [
+          const Text(
+            "Our Commitment in Motion",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 60),
+          Wrap(
+            spacing: 32,
+            runSpacing: 32,
+            alignment: WrapAlignment.center,
+            children: [
+              _ValueCard(
+                icon: Icons.public_rounded,
+                title: 'Global Spread',
+                description:
+                    'Designed for a global audience, breaking language barriers to bring mindfulness to every corner of the world.',
+                color: const Color(0xFF6366F1),
+              ),
+              _ValueCard(
+                icon: Icons.favorite_rounded,
+                title: 'Human-First',
+                description:
+                    'No addictive loops. No infinite scrolls. We measure success by the quality of your time, not the quantity.',
+                color: Colors.pinkAccent,
+              ),
+              _ValueCard(
+                icon: Icons.auto_awesome_rounded,
+                title: 'Pure Intention',
+                description:
+                    'Every feature is built to solve a human problem, from financial clarity to attention restoration.',
+                color: Colors.amberAccent,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPrivacyVault(bool isMobile) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        vertical: 100,
+        horizontal: isMobile ? 24 : 80,
+      ),
+      padding: EdgeInsets.all(isMobile ? 32 : 60),
+      decoration: BoxDecoration(
+        color: BalanceColors.surfaceDark.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(40),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.shield_rounded, color: Colors.greenAccent, size: 48),
+          const SizedBox(height: 24),
+          const Text(
+            "Privacy & Security Vault",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            "Your data is yours. We are just the stewards.",
+            style: TextStyle(color: Colors.white60, fontSize: 18),
+          ),
+          const SizedBox(height: 60),
+          Wrap(
+            spacing: 40,
+            runSpacing: 40,
+            alignment: WrapAlignment.center,
+            children: [
+              _VaultItem(
+                icon: Icons.lock_outline,
+                text: "End-to-End Encryption",
+              ),
+              _VaultItem(
+                icon: Icons.no_accounts_outlined,
+                text: "Zero Third-Party Selling",
+              ),
+              _VaultItem(
+                icon: Icons.gpp_maybe_outlined,
+                text: "GDPR & CCPA Compliant",
+              ),
+              _VaultItem(
+                icon: Icons.delete_forever_outlined,
+                text: "Instant Data Deletion",
+              ),
+            ],
+          ),
+          const SizedBox(height: 80),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _LegalButton(label: "Privacy Policy", onTap: () {}),
+              const SizedBox(width: 20),
+              _LegalButton(label: "Terms of Service", onTap: () {}),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -290,8 +217,7 @@ class _ValuesPageState extends State<ValuesPage> {
 
 class _ValueCard extends StatelessWidget {
   final IconData icon;
-  final String title;
-  final String description;
+  final String title, description;
   final Color color;
 
   const _ValueCard({
@@ -304,44 +230,73 @@ class _ValueCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 280,
-      padding: const EdgeInsets.all(24),
+      width: 320,
+      padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
-        color: BalanceColors.surfaceDark,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        color: Colors.white.withOpacity(0.02),
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: color.withOpacity(0.3)),
-            ),
-            child: Center(child: Icon(icon, color: color, size: 28)),
-          ),
+          Icon(icon, color: color, size: 40),
           const SizedBox(height: 24),
           Text(
             title,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            style: const TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.w700,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           Text(
             description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white.withOpacity(0.7),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: BalanceColors.textSecondary,
+              fontSize: 16,
               height: 1.5,
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _VaultItem extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  const _VaultItem({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.white38, size: 32),
+        const SizedBox(height: 12),
+        Text(text, style: const TextStyle(color: Colors.white70, fontSize: 14)),
+      ],
+    );
+  }
+}
+
+class _LegalButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _LegalButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onTap,
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: Colors.white10),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      child: Text(label, style: const TextStyle(color: Colors.white70)),
     );
   }
 }

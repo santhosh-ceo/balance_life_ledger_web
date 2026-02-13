@@ -1,5 +1,5 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-
 import '../constants/colors.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/footer.dart';
@@ -11,54 +11,21 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _slideAnimation;
+class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0, 0.5, curve: Curves.easeOut),
-      ),
-    );
-    _slideAnimation = Tween<double>(begin: 50, end: 0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.3, 1, curve: Curves.easeOut),
-      ),
-    );
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   void _navigateTo(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    setState(() => _currentIndex = index);
     final routes = ['/home', '/products', '/values', '/about', '/contact'];
-    if (index < routes.length) {
-      Navigator.pushNamed(context, routes[index]);
-    }
+    if (index < routes.length) Navigator.pushNamed(context, routes[index]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 900;
+
     return Scaffold(
+      backgroundColor: BalanceColors.backgroundDark,
       extendBodyBehindAppBar: true,
       appBar: BalanceAppBar(
         isTransparent: true,
@@ -68,267 +35,217 @@ class _HomePageState extends State<HomePage>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Hero Section
-            Container(
-              height: MediaQuery.of(context).size.height,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: BalanceColors.websiteGradient,
-              ),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            BalanceColors.backgroundDark.withOpacity(0.8),
-                            BalanceColors.surfaceDark.withOpacity(0.9),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                    ),
-                  ),
+            _buildLabsHero(isMobile),
 
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return Transform.translate(
-                            offset: Offset(0, _slideAnimation.value),
-                            child: Opacity(
-                              opacity: _fadeAnimation.value,
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.05),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: BalanceColors.ledgerPrimary
-                                      .withOpacity(0.2),
-                                ),
-                              ),
-                              child: Text(
-                                'DIGITAL WELLNESS REDEFINED',
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(
-                                      color: BalanceColors.ledgerSecondary,
-                                      letterSpacing: 2,
-                                    ),
-                              ),
-                            ),
-                            const SizedBox(height: 32),
-                            Text(
-                              'Balance Your Digital\n& Real World',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.displayLarge
-                                  ?.copyWith(
-                                    foreground: Paint()
-                                      ..shader =
-                                          const LinearGradient(
-                                            colors: [
-                                              Colors.white,
-                                              BalanceColors.textSecondary,
-                                            ],
-                                          ).createShader(
-                                            const Rect.fromLTWH(0, 0, 500, 100),
-                                          ),
-                                  ),
-                            ),
-                            const SizedBox(height: 24),
-                            Text(
-                              'A suite of apps designed to restore harmony between your\n digital life and personal well-being through mindful technology.',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyLarge
-                                  ?.copyWith(
-                                    color: BalanceColors.textSecondary,
-                                  ),
-                            ),
-                            const SizedBox(height: 48),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Balance: Life Ledger CTA
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: GestureDetector(
-                                    onTap: () => _navigateTo(1),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 32,
-                                        vertical: 18,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        gradient: BalanceColors.ledgerGradient,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: BalanceColors.ledgerPrimary
-                                                .withOpacity(0.4),
-                                            blurRadius: 20,
-                                            spreadRadius: 0,
-                                            offset: const Offset(0, 10),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.auto_graph_rounded,
-                                            color: Colors.white,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Life Ledger',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium
-                                                ?.copyWith(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          const Icon(
-                                            Icons.arrow_forward_rounded,
-                                            size: 20,
-                                            color: Colors.white,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 24),
-                                // Balance: Focus Restore CTA
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: GestureDetector(
-                                    onTap: () => _navigateTo(1),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 32,
-                                        vertical: 18,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: BalanceColors.surfaceDark,
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(
-                                          color: BalanceColors.focusPrimary
-                                              .withOpacity(0.3),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.psychology_rounded,
-                                            color: BalanceColors.focusPrimary,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Focus Restore',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium
-                                                ?.copyWith(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          const Icon(
-                                            Icons.arrow_forward_rounded,
-                                            size: 20,
-                                            color: BalanceColors.focusPrimary,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Products Preview Section
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 120,
-                horizontal: 32,
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 60,
+                horizontal: isMobile ? 24 : 80,
               ),
               child: Column(
                 children: [
-                  Text(
-                    'Our Digital Wellness Suite',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.displaySmall?.copyWith(color: Colors.white),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Two complementary apps designed to work together',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: BalanceColors.textSecondary,
+                  const Text(
+                    "Our Ecosystem",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 42,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1,
                     ),
                   ),
-                  const SizedBox(height: 64),
-                  // Products will be shown in ProductsPage
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () => _navigateTo(1),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
-                          ),
-                        ),
-                        child: Text(
-                          'View All Products →',
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                      ),
-                    ),
+                  const SizedBox(height: 100),
+
+                  // 1. WEALTH TRACKER
+                  _buildUIShowcaseRow(
+                    isMobile: isMobile,
+                    logo: 'assets/wealth_logo.png',
+                    title: 'Wealth Tracker',
+                    desc:
+                        'A high-precision financial dashboard tracking 10 pillars: Food, Rent, Fuel, EMI, Bills, Shopping, Health, Entertainment, Transport, and Other. Smart-clutter removal hides categories with \$0 spending for a focused legend.',
+                    image: 'assets/wealth_ui.png',
+                    accentColor: const Color(0xFF10B981),
+                    isReversed: false,
+                  ),
+
+                  const SizedBox(height: 150),
+
+                  // 2. LIFE LEDGER
+                  _buildUIShowcaseRow(
+                    isMobile: isMobile,
+                    logo: 'assets/ledger_logo.png',
+                    title: 'Life Ledger',
+                    desc:
+                        'Your digital sanctuary for daily reflection. Securely log your moods, record your thoughts, and build a searchable history of your emotional journey with end-to-end encryption.',
+                    image: 'assets/ledger_ui.png',
+                    accentColor: BalanceColors.ledgerPrimary,
+                    isReversed: true,
+                  ),
+
+                  const SizedBox(height: 150),
+
+                  // 3. FOCUS RESTORE
+                  _buildUIShowcaseRow(
+                    isMobile: isMobile,
+                    logo: 'assets/focus_logo.png',
+                    title: 'Focus Restore',
+                    desc:
+                        'Reclaim your attention span. A specialized productivity suite that utilizes deep-work timers and session analytics to master focus in an age of distraction.',
+                    image: 'assets/focus_ui.png',
+                    accentColor: BalanceColors.focusPrimary,
+                    isReversed: false,
                   ),
                 ],
               ),
             ),
-
             const Footer(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabsHero(bool isMobile) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(top: isMobile ? 120 : 200, bottom: 100),
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: const Alignment(0.8, -0.6),
+          radius: 1.5,
+          colors: [
+            BalanceColors.ledgerPrimary.withOpacity(0.08),
+            Colors.transparent,
+          ],
+        ),
+      ),
+      child: Column(
+        children: [
+          Image.asset('assets/logo.png', height: 80),
+          const SizedBox(height: 32),
+          Text(
+            'Balance Labs Inc.',
+            style: TextStyle(
+              fontSize: isMobile ? 48 : 88,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: -3,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Architecting tools for the intentional life.',
+            style: TextStyle(
+              color: Colors.white38,
+              fontSize: 22,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUIShowcaseRow({
+    required bool isMobile,
+    required String logo,
+    required String title,
+    required String desc,
+    required String image,
+    required Color accentColor,
+    required bool isReversed,
+  }) {
+    Widget textContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(logo, height: 50),
+        const SizedBox(height: 24),
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          desc,
+          style: const TextStyle(
+            color: BalanceColors.textSecondary,
+            fontSize: 18,
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 32),
+        _AppFeatureBadge(text: "App Brief", color: accentColor),
+      ],
+    );
+
+    // THE UI SHOWCASE WRAPPER (Device Mockup Style)
+    Widget uiContent = Center(
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: 340,
+          maxHeight: 680,
+        ), // Mobile Screen Ratio
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40), // Phone-like rounded corners
+          border: Border.all(color: Colors.white.withOpacity(0.1), width: 8),
+          boxShadow: [
+            BoxShadow(
+              color: accentColor.withOpacity(0.2),
+              blurRadius: 100,
+              spreadRadius: -20,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(32),
+          child: Image.asset(image, fit: BoxFit.cover),
+        ),
+      ),
+    );
+
+    if (isMobile) {
+      return Column(
+        children: [uiContent, const SizedBox(height: 60), textContent],
+      );
+    }
+
+    return Row(
+      children: [
+        if (isReversed) Expanded(child: uiContent),
+        if (isReversed) const SizedBox(width: 100),
+        Expanded(child: textContent),
+        if (!isReversed) const SizedBox(width: 100),
+        if (!isReversed) Expanded(child: uiContent),
+      ],
+    );
+  }
+}
+
+class _AppFeatureBadge extends StatelessWidget {
+  final String text;
+  final Color color;
+  const _AppFeatureBadge({required this.text, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+          letterSpacing: 1,
         ),
       ),
     );

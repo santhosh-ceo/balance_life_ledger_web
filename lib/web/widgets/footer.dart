@@ -1,250 +1,162 @@
 import 'package:flutter/material.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../constants/colors.dart';
 
 class Footer extends StatelessWidget {
   final bool showLegalLinks;
-
   const Footer({super.key, this.showLegalLinks = true});
+
+  // Developer Console URL
+  static const String _devConsoleUrl =
+      "https://play.google.com/store/apps/dev?id=8119606961308804734";
+
+  void _pushRoute(BuildContext context, String route) {
+    if (ModalRoute.of(context)?.settings.name != route) {
+      Navigator.pushNamed(context, route);
+    }
+  }
+
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 900;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 32),
-      decoration: BoxDecoration(
-        color: Colors.black,
-        border: Border(
-          top: BorderSide(
-            color: Colors.white.withOpacity(0.1),
-            width: 1,
-          ),
-        ),
+      padding: EdgeInsets.symmetric(
+        vertical: 80,
+        horizontal: isMobile ? 24 : 80,
       ),
+      decoration: const BoxDecoration(color: Color(0xFF05070A)),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            runSpacing: 40,
+            spacing: isMobile ? 20 : 100,
             children: [
-              // Logo & Description
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Image.asset(
-                          'assets/logo.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'BALANCE',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 2,
-                          foreground: Paint()
-                            ..shader = BalanceColors.ledgerGradient.createShader(
-                              const Rect.fromLTWH(0, 0, 200, 70),
-                            ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: 300,
-                    child: Text(
-                      'Creating tools for mindful technology use and digital well-being.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              // --- BRAND BLOCK ---
+              SizedBox(
+                width: isMobile ? double.infinity : 350,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFooterLogo(context),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Architecting tools for the intentional life. Explore our ecosystem of high-precision wellness apps.',
+                      style: TextStyle(
                         color: BalanceColors.textSecondary,
+                        fontSize: 16,
+                        height: 1.5,
                       ),
                     ),
+                    const SizedBox(height: 32),
+                    // Only Google Play Badge
+                    _StoreBadge(
+                      Icons.play_arrow_rounded,
+                      "GET IT ON GOOGLE PLAY",
+                      () => _launchURL(_devConsoleUrl),
+                    ),
+                    const SizedBox(height: 32),
+                    Row(
+                      children: [
+                        _SocialIcon(
+                          Icons.play_circle_fill_rounded,
+                          () => _launchURL(
+                            'https://www.youtube.com/@balance_labs',
+                          ),
+                          label: "YouTube",
+                        ),
+                        const SizedBox(width: 24),
+                        _SocialIcon(
+                          Icons.business_center_rounded,
+                          () => _launchURL(
+                            'https://www.linkedin.com/company/balance-life-ledger',
+                          ),
+                          label: "LinkedIn",
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // --- NAVIGATION ---
+              _FooterNavGroup(
+                title: 'Products',
+                links: [
+                  _LinkItem(
+                    'Wealth Tracker',
+                    () => _pushRoute(context, '/products'),
                   ),
-                  const SizedBox(height: 24),
-                  // App Store Badges (Coming Soon)
-                  Row(
-                    children: [
-                      _AppStoreBadge(
-                        icon: Icons.android_rounded,
-                        label: 'Play Store',
-                        color: const Color(0xFF3DDC84),
-                        onTap: () {},
-                      ),
-                      const SizedBox(width: 12),
-                      _AppStoreBadge(
-                        icon: Icons.apple_rounded,
-                        label: 'App Store',
-                        color: Colors.white,
-                        textColor: Colors.black,
-                        onTap: () {},
-                      ),
-                    ],
+                  _LinkItem(
+                    'Life Ledger',
+                    () => _pushRoute(context, '/products'),
+                  ),
+                  _LinkItem(
+                    'Focus Restore',
+                    () => _pushRoute(context, '/products'),
                   ),
                 ],
               ),
 
-              // Links
-              Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Products',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _FooterLink(
-                        label: 'Life Ledger',
-                        onTap: () => Navigator.pushNamed(context, '/products'),
-                      ),
-                      const SizedBox(height: 8),
-                      _FooterLink(
-                        label: 'Focus Restore',
-                        onTap: () => Navigator.pushNamed(context, '/products'),
-                      ),
-                      const SizedBox(height: 8),
-                      _FooterLink(
-                        label: 'Future Projects',
-                        onTap: () {},
-                      ),
-                    ],
+              _FooterNavGroup(
+                title: 'Company',
+                links: [
+                  _LinkItem('About Us', () => _pushRoute(context, '/about')),
+                  _LinkItem('Our Values', () => _pushRoute(context, '/values')),
+                  _LinkItem('Contact', () => _pushRoute(context, '/contact')),
+                ],
+              ),
+
+              _FooterNavGroup(
+                title: 'Legal',
+                links: [
+                  _LinkItem(
+                    'Privacy Policy',
+                    () => _pushRoute(context, '/privacy'),
                   ),
-                  const SizedBox(width: 64),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Company',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _FooterLink(
-                        label: 'About',
-                        onTap: () => Navigator.pushNamed(context, '/about'),
-                      ),
-                      const SizedBox(height: 8),
-                      _FooterLink(
-                        label: 'Values',
-                        onTap: () => Navigator.pushNamed(context, '/values'),
-                      ),
-                      const SizedBox(height: 8),
-                      _FooterLink(
-                        label: 'Careers',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 64),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Legal',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _FooterLink(
-                        label: 'Privacy Policy',
-                        onTap: () => Navigator.pushNamed(context, '/privacy'),
-                      ),
-                      const SizedBox(height: 8),
-                      _FooterLink(
-                        label: 'Terms & Conditions',
-                        onTap: () => Navigator.pushNamed(context, '/terms'),
-                      ),
-                      const SizedBox(height: 8),
-                      _FooterLink(
-                        label: 'Contact',
-                        onTap: () => Navigator.pushNamed(context, '/contact'),
-                      ),
-                    ],
+                  _LinkItem(
+                    'Terms of Service',
+                    () => _pushRoute(context, '/terms'),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 64),
-          Divider(
-            color: Colors.white.withOpacity(0.1),
-            height: 1,
-          ),
-          const SizedBox(height: 32),
-          Row(
+          const SizedBox(height: 80),
+          const Divider(color: Color(0xFF1E293B)),
+          const SizedBox(height: 40),
+
+          // --- BOTTOM BAR ---
+          Flex(
+            direction: isMobile ? Axis.vertical : Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '© 2026 Balance Digital Wellness. All rights reserved.',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: BalanceColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  if (showLegalLinks)
-                    Row(
-                      children: [
-                        _SmallFooterLink(
-                          label: 'Privacy Policy',
-                          onTap: () => Navigator.pushNamed(context, '/privacy'),
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          '•',
-                          style: TextStyle(
-                            color: BalanceColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        _SmallFooterLink(
-                          label: 'Terms & Conditions',
-                          onTap: () => Navigator.pushNamed(context, '/terms'),
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          '•',
-                          style: TextStyle(
-                            color: BalanceColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        _SmallFooterLink(
-                          label: 'Cookie Policy',
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                ],
+              Text(
+                '© 2026 Balance Labs Inc. All rights reserved.',
+                style: TextStyle(
+                  color: BalanceColors.textSecondary,
+                  fontSize: 14,
+                ),
               ),
-              Row(
-                children: [
-                  _SocialIcon(icon: Icons.campaign_rounded, onTap: () {}),
-                  const SizedBox(width: 16),
-                  _SocialIcon(icon: Icons.people_alt_rounded, onTap: () {}),
-                  const SizedBox(width: 16),
-                  _SocialIcon(icon: Icons.linked_camera_rounded, onTap: () {}),
-                  const SizedBox(width: 16),
-                  _SocialIcon(icon: Icons.code_rounded, onTap: () {}),
-                ],
+              if (isMobile) const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () => _pushRoute(context, '/contact'),
+                child: Text(
+                  'Contact support: hello@balancelabs.inc',
+                  style: TextStyle(
+                    color: BalanceColors.textSecondary,
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ],
           ),
@@ -252,22 +164,85 @@ class Footer extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildFooterLogo(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => _pushRoute(context, '/home'),
+        child: Row(
+          children: [
+            Image.asset('assets/ledger_logo.png', height: 30),
+            const SizedBox(width: 12),
+            const Text(
+              'BALANCE',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _AppStoreBadge extends StatelessWidget {
+class _FooterNavGroup extends StatelessWidget {
+  final String title;
+  final List<_LinkItem> links;
+  const _FooterNavGroup({required this.title, required this.links});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 24),
+        ...links.map(
+          (link) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: link.onTap,
+                child: Text(
+                  link.label,
+                  style: TextStyle(
+                    color: BalanceColors.textSecondary,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LinkItem {
+  final String label;
+  final VoidCallback onTap;
+  _LinkItem(this.label, this.onTap);
+}
+
+class _StoreBadge extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color color;
-  final Color? textColor;
   final VoidCallback onTap;
-
-  const _AppStoreBadge({
-    required this.icon,
-    required this.label,
-    required this.color,
-    this.textColor,
-    required this.onTap,
-  });
+  const _StoreBadge(this.icon, this.label, this.onTap);
 
   @override
   Widget build(BuildContext context) {
@@ -276,27 +251,24 @@ class _AppStoreBadge extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.05),
+            border: Border.all(color: Colors.white10),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.1),
-            ),
           ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                color: color,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
+              Icon(icon, color: Colors.white, size: 24),
+              const SizedBox(width: 12),
               Text(
                 label,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: textColor ?? color,
-                  fontWeight: FontWeight.w600,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1,
                 ),
               ),
             ],
@@ -307,57 +279,11 @@ class _AppStoreBadge extends StatelessWidget {
   }
 }
 
-class _FooterLink extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _FooterLink({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: BalanceColors.textSecondary,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SmallFooterLink extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _SmallFooterLink({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: BalanceColors.textSecondary,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _SocialIcon extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
-
-  const _SocialIcon({required this.icon, required this.onTap});
+  final String label;
+  const _SocialIcon(this.icon, this.onTap, {required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -365,23 +291,9 @@ class _SocialIcon extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.1),
-            ),
-          ),
-          child: Center(
-            child: Icon(
-              icon,
-              size: 20,
-              color: BalanceColors.textSecondary,
-            ),
-          ),
+        child: Tooltip(
+          message: label,
+          child: Icon(icon, color: Colors.white70, size: 32),
         ),
       ),
     );

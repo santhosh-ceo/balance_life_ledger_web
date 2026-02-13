@@ -1,10 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../constants/colors.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/footer.dart';
-import '../widgets/product_card.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
@@ -17,250 +16,88 @@ class _ProductsPageState extends State<ProductsPage> {
   int _currentIndex = 1;
 
   void _navigateTo(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    setState(() => _currentIndex = index);
     final routes = ['/home', '/products', '/values', '/about', '/contact'];
-    if (index < routes.length) {
-      Navigator.pushNamed(context, routes[index]);
-    }
+    if (index < routes.length) Navigator.pushNamed(context, routes[index]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 950;
+
     return Scaffold(
+      backgroundColor: BalanceColors.backgroundDark,
+      extendBodyBehindAppBar: true,
       appBar: BalanceAppBar(
+        isTransparent: true,
         currentIndex: _currentIndex,
         onItemTapped: _navigateTo,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Hero Section
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 120,
-                horizontal: 32,
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    BalanceColors.backgroundDark,
-                    BalanceColors.surfaceDark,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Our Products',
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      foreground: Paint()
-                        ..shader = const LinearGradient(
-                          colors: [
-                            BalanceColors.ledgerPrimary,
-                            BalanceColors.focusPrimary,
-                          ],
-                        ).createShader(const Rect.fromLTWH(0, 0, 300, 70)),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Tools designed to bring harmony to your digital life',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: BalanceColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
+            _buildPageHero(isMobile),
+
+            // --- APP 1: LIFE LEDGER ---
+            _AppShowcase(
+              logo: "assets/ledger_logo.png",
+              title: "Balance: Life Ledger",
+              tagline: "Your Daily Ritual for Mindful Reflection",
+              description:
+                  "Understand the 'Why' behind your mood. A structured companion that turns daily snapshots into a visual narrative. Securely log your thoughts with end-to-end encryption and beautiful data visualizations.",
+              gradient: BalanceColors.ledgerGradient,
+              playStoreUrl:
+                  "https://play.google.com/store/apps/details?id=com.anakramy.balance",
+              screenshots: const [
+                "assets/ledger_1.png",
+                "assets/ledger_2.png",
+                "assets/ledger_3.png",
+                "assets/ledger_4.png",
+              ],
+              isMobile: isMobile,
             ),
 
-            // Products Grid
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 32),
-              child: Column(
-                children: [
-                  // Balance: Life Ledger
-                  ProductCard(
-                    title: 'Balance: Life Ledger',
-                    tagline: 'Your daily ritual for mindful reflection',
-                    description:
-                        'A structured daily companion app that helps you build a non-negotiable ritual of reflection. Track priorities, gratitude, and emotional state through a time-bound system that transforms daily snapshots into a visual narrative of your life balance.',
-                    icon: Icons.auto_graph_rounded,
-                    gradient: BalanceColors.ledgerGradient,
-                    features: const [
-                      '24-Hour Journaling Windows',
-                      'Visual Balance Dashboard',
-                      'Streak & Habit Tracking',
-                      'Mood & Pattern Insights',
-                      'Goal Integration',
-                    ],
-                    onLearnMore: () {
-                      // Show detailed modal or navigate to product detail
-                    },
-                    onGetApp: () {
-                      // Show platform selection
-                      _showDownloadDialog(
-                        context,
-                        'Balance: Life Ledger',
-                        BalanceColors.ledgerPrimary,
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 64),
-
-                  // Balance: Focus Restore
-                  ProductCard(
-                    title: 'Balance: Focus Restore',
-                    tagline: 'Rebuild your attention span',
-                    description:
-                        'A gamified companion app that helps repair and strengthen your attention span through timed challenges and mindfulness practices. Earn rewards, unlock achievements, and track your focus journey with non-AI driven exercises.',
-                    icon: Icons.psychology_rounded,
-                    gradient: BalanceColors.focusGradient,
-                    features: const [
-                      'Gamified Focus Challenges',
-                      'Attention Span Tracking',
-                      'Mindfulness Exercises',
-                      'Rewards & Unlockables',
-                      'Progress Analytics',
-                    ],
-                    onLearnMore: () {
-                      // Show detailed modal or navigate to product detail
-                    },
-                    onGetApp: () {
-                      _showDownloadDialog(
-                        context,
-                        'Balance: Focus Restore',
-                        BalanceColors.focusPrimary,
-                      );
-                    },
-                  ),
-                ],
-              ),
+            // --- APP 2: FOCUS RESTORE ---
+            _AppShowcase(
+              logo: "assets/focus_logo.png",
+              title: "Balance: Focus Restore",
+              tagline: "Reclaim Your Productivity through Science",
+              description:
+                  "Deep focus sessions and meaningful breaks designed to strengthen your attention span. Master focus in an age of distraction with advanced timers and session analytics.",
+              gradient: BalanceColors.focusGradient,
+              playStoreUrl:
+                  "https://play.google.com/store/apps/details?id=com.anakramy.restore.balance_focus_restore",
+              screenshots: const [
+                "assets/focus_1.png",
+                "assets/focus_2.png",
+                "assets/focus_3.png",
+                "assets/focus_4.png",
+              ],
+              isMobile: isMobile,
             ),
 
-            // Coming Soon Section
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 120,
-                horizontal: 32,
+            // --- APP 3: WEALTH TRACKER ---
+            _AppShowcase(
+              logo: "assets/wealth_logo.png",
+              title: "Balance: Wealth Tracker",
+              tagline: "Precision Tracking & Financial Optimization",
+              description:
+                  "The 10-pillar financial engine. Track Food, Rent, Fuel, EMI, and more with an intelligent legend system. Features pure color accuracy and smart-clutter removal for zero-spending categories.",
+              gradient: const LinearGradient(
+                colors: [Color(0xFF10B981), Color(0xFF059669)],
               ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    BalanceColors.surfaceDark,
-                    BalanceColors.backgroundDark,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: BalanceColors.ledgerPrimary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: BalanceColors.ledgerPrimary.withOpacity(0.3),
-                      ),
-                    ),
-                    child: Text(
-                      'COMING 2026',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: BalanceColors.ledgerPrimary,
-                        letterSpacing: 2,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Text(
-                    'The Future of Balance',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.displaySmall?.copyWith(color: Colors.white),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: 600,
-                    child: Text(
-                      'We\'re working on revolutionary features that will transform how you interact with technology. Join our waitlist to be the first to experience what\'s next.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: BalanceColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 48),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 300,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Enter your email for early access',
-                              hintStyle: TextStyle(
-                                color: Colors.white.withOpacity(0.3),
-                              ),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 16,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [
-                                BalanceColors.ledgerPrimary,
-                                BalanceColors.focusPrimary,
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            'Join Waitlist',
-                            style: Theme.of(context).textTheme.bodyLarge
-                                ?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              playStoreUrl:
+                  "https://play.google.com/store/apps/details?id=com.anakramy.balance_wealth_tracker",
+              screenshots: const [
+                "assets/wealth_1.png",
+                "assets/wealth_2.png",
+                "assets/wealth_3.png",
+                "assets/wealth_4.png",
+              ],
+              isMobile: isMobile,
             ),
 
+            _buildWaitlistSection(isMobile),
             const Footer(),
           ],
         ),
@@ -268,186 +105,271 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  void _showDownloadDialog(
-    BuildContext context,
-    String appName,
-    Color primaryColor,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: BalanceColors.surfaceDark,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-            side: BorderSide(color: Colors.white.withOpacity(0.1), width: 1),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(40),
-            width: 500,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [primaryColor, primaryColor.withOpacity(0.7)],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Center(
-                    child: Text(
-                      appName == 'Balance: Life Ledger' ? '⭕' : '🌀',
-                      style: const TextStyle(fontSize: 36),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Get $appName',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Coming soon to your favorite app stores',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: BalanceColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                // Platform Buttons
-                Column(
-                  children: [
-                    _PlatformButton(
-                      icon: Icons.android_rounded,
-                      label: 'Google Play Store',
-                      color: const Color(0xFF3DDC84),
-                      onTap: () async {
-                        // Launch Play Store
-                        Navigator.pop(context);
-                        final url = Uri.parse(
-                          'https://play.google.com/store/apps/details?id=com.anakramy.balance',
-                        );
-
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(
-                            url,
-                            mode: LaunchMode.externalApplication,
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Could not launch Play Store'),
-                              backgroundColor: primaryColor,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    _PlatformButton(
-                      icon: Icons.apple_rounded,
-                      label: 'Apple App Store',
-                      color: Colors.white,
-                      textColor: Colors.black,
-                      onTap: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              '$appName launching soon on App Store',
-                            ),
-                            backgroundColor: primaryColor,
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    _PlatformButton(
-                      icon: Icons.web_rounded,
-                      label: 'Web App',
-                      color: const Color(0xFF4285F4),
-                      onTap: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Web version available after mobile launch',
-                            ),
-                            backgroundColor: BalanceColors.ledgerPrimary,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    'Not now',
-                    style: TextStyle(color: BalanceColors.textSecondary),
-                  ),
-                ),
-              ],
+  Widget _buildPageHero(bool isMobile) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(24, isMobile ? 120 : 200, 24, 60),
+      child: Column(
+        children: [
+          Text(
+            "The 2026 Collection",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: isMobile ? 42 : 80,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: -2,
             ),
           ),
-        );
-      },
+          const SizedBox(height: 16),
+          const Text(
+            "Explore the Balance Labs ecosystem of digital wellness tools.",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white38, fontSize: 18),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWaitlistSection(bool isMobile) {
+    return Container(
+      margin: EdgeInsets.all(isMobile ? 24 : 80),
+      padding: EdgeInsets.all(isMobile ? 32 : 80),
+      decoration: BoxDecoration(
+        color: BalanceColors.surfaceDark.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(48),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Column(
+        children: [
+          const Text(
+            "The Future of Balance",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 48),
+          _buildWaitlistInput(isMobile),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWaitlistInput(bool isMobile) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 500),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "email@address.com",
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: Colors.white24),
+                ),
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            child: const Text(
+              "Join Waitlist",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _PlatformButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final Color? textColor;
-  final VoidCallback onTap;
+class _AppShowcase extends StatelessWidget {
+  final String logo, title, tagline, description, playStoreUrl;
+  final List<String> screenshots;
+  final Gradient gradient;
+  final bool isMobile;
 
-  const _PlatformButton({
-    required this.icon,
-    required this.label,
-    required this.color,
-    this.textColor,
-    required this.onTap,
+  const _AppShowcase({
+    required this.logo,
+    required this.title,
+    required this.tagline,
+    required this.description,
+    required this.playStoreUrl,
+    required this.screenshots,
+    required this.gradient,
+    required this.isMobile,
   });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: 100,
+        horizontal: isMobile ? 24 : 80,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center, // Centered Layout
+        children: [
+          // Logo above title
+          Image.asset(logo, height: 80),
+          const SizedBox(height: 24),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 48,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            tagline,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: gradient.colors.first,
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: Text(
+              description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: BalanceColors.textSecondary,
+                fontSize: 18,
+                height: 1.6,
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+          _DownloadPlayButton(url: playStoreUrl, gradient: gradient),
+          const SizedBox(height: 80),
+
+          // Screenshots below description
+          isMobile ? _buildScreenshotGrid() : _buildScreenshotRow(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScreenshotRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: screenshots
+          .map(
+            (s) => Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: _GlassScreenshot(asset: s),
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildScreenshotGrid() {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.55,
+      ),
+      itemCount: screenshots.length,
+      itemBuilder: (context, index) =>
+          _GlassScreenshot(asset: screenshots[index]),
+    );
+  }
+}
+
+class _GlassScreenshot extends StatelessWidget {
+  final String asset;
+  const _GlassScreenshot({required this.asset});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: 40,
+            offset: const Offset(0, 20),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30),
+        child: Image.asset(asset, fit: BoxFit.cover),
+      ),
+    );
+  }
+}
+
+class _DownloadPlayButton extends StatelessWidget {
+  final String url;
+  final Gradient gradient;
+  const _DownloadPlayButton({required this.url, required this.gradient});
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: onTap,
+        onTap: () async => await launchUrl(Uri.parse(url)),
         child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: color.withOpacity(0.3)),
-          ),
-          child: Row(
-            children: [
-              Icon(icon, color: color, size: 24),
-              const SizedBox(width: 16),
-              Text(
-                label,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: textColor ?? color,
-                  fontWeight: FontWeight.w600,
-                ),
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(100),
+            boxShadow: [
+              BoxShadow(
+                color: gradient.colors.first.withOpacity(0.3),
+                blurRadius: 30,
+                offset: const Offset(0, 10),
               ),
-              const Spacer(),
-              const Icon(
-                Icons.arrow_forward_rounded,
-                color: BalanceColors.textSecondary,
-                size: 20,
+            ],
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.play_arrow_rounded, color: Colors.white, size: 28),
+              SizedBox(width: 12),
+              Text(
+                "GOOGLE PLAY",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 16,
+                  letterSpacing: 1.5,
+                ),
               ),
             ],
           ),

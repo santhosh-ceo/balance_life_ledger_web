@@ -14,18 +14,24 @@ class BalanceWebsite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Balance - Digital Wellness',
+      // Updated Title
+      title: 'Balance Labs Inc.',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
         scaffoldBackgroundColor: BalanceColors.backgroundDark,
+
+        // Ensure the primary color reflects the Labs branding
         colorScheme: const ColorScheme.dark(
           primary: BalanceColors.ledgerPrimary,
           secondary: BalanceColors.focusPrimary,
           surface: BalanceColors.surfaceDark,
+          onSurface: Colors.white,
           background: BalanceColors.backgroundDark,
         ),
+
+        // Typography consistent with the premium "Labs" aesthetic
         textTheme: const TextTheme(
           displayLarge: TextStyle(
             fontSize: 72,
@@ -44,10 +50,7 @@ class BalanceWebsite extends StatelessWidget {
             fontWeight: FontWeight.w700,
             letterSpacing: -0.5,
           ),
-          headlineMedium: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-          ),
+          headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
           bodyLarge: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w400,
@@ -59,24 +62,27 @@ class BalanceWebsite extends StatelessWidget {
             height: 1.5,
           ),
         ),
+
         cardTheme: CardThemeData(
           color: BalanceColors.surfaceDark,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
-            side: BorderSide(
-              color: Colors.white.withOpacity(0.1),
-              width: 1,
-            ),
+            side: BorderSide(color: Colors.white.withOpacity(0.1), width: 1),
           ),
         ),
+
         buttonTheme: const ButtonThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),
       ),
+
+      // Default Entry Point
       home: const HomePage(),
+
+      // Navigation Logic
       routes: {
         '/home': (context) => const HomePage(),
         '/about': (context) => const AboutPage(),
