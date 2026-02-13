@@ -219,7 +219,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
             onPressed: () {},
             icon: const Icon(Icons.email_outlined, color: Colors.white),
             label: const Text(
-              "sadiga80@gmail.com",
+              "info@anakramy.com",
               style: TextStyle(
                 color: Colors.white,
                 decoration: TextDecoration.underline,

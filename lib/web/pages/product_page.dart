@@ -101,8 +101,6 @@ class _ProductsPageState extends State<ProductsPage> {
               ],
               isMobile: isMobile,
             ),
-
-            _buildWaitlistSection(isMobile),
             const Footer(),
           ],
         ),
@@ -116,7 +114,7 @@ class _ProductsPageState extends State<ProductsPage> {
       child: Column(
         children: [
           Text(
-            "The 2026 Collection",
+            "Our suite of apps",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: isMobile ? 42 : 80,
@@ -130,75 +128,6 @@ class _ProductsPageState extends State<ProductsPage> {
             "Explore the Balance Labs ecosystem of digital wellness tools.",
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white38, fontSize: 18),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWaitlistSection(bool isMobile) {
-    return Container(
-      margin: EdgeInsets.all(isMobile ? 24 : 80),
-      padding: EdgeInsets.all(isMobile ? 32 : 80),
-      decoration: BoxDecoration(
-        color: BalanceColors.surfaceDark.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(48),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-      ),
-      child: Column(
-        children: [
-          const Text(
-            "The Future of Balance",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 48),
-          _buildWaitlistInput(isMobile),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWaitlistInput(bool isMobile) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 500),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.black26,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        children: [
-          const Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "email@address.com",
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: Colors.white24),
-                ),
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            child: const Text(
-              "Join Waitlist",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
           ),
         ],
       ),

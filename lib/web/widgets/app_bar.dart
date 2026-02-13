@@ -109,10 +109,10 @@ class BalanceAppBar extends StatelessWidget implements PreferredSizeWidget {
         onTap: onLogoPressed ?? () => Navigator.pushNamed(context, '/home'),
         child: Row(
           children: [
-            Image.asset('assets/ledger_logo.png', height: 35, width: 35),
+            Image.asset('assets/logo.png', height: 35, width: 35),
             const SizedBox(width: 12),
             Text(
-              'BALANCE',
+              'BALANCE LABS',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,

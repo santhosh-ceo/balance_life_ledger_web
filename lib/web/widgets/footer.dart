@@ -60,7 +60,7 @@ class Footer extends StatelessWidget {
                     const SizedBox(height: 32),
                     // Only Google Play Badge
                     _StoreBadge(
-                      Icons.play_arrow_rounded,
+                      Icons.play_arrow,
                       "GET IT ON GOOGLE PLAY",
                       () => _launchURL(_devConsoleUrl),
                     ),
@@ -68,15 +68,17 @@ class Footer extends StatelessWidget {
                     Row(
                       children: [
                         _SocialIcon(
-                          Icons.play_circle_fill_rounded,
+                          Icons.smart_display_outlined,
                           () => _launchURL(
                             'https://www.youtube.com/@balance_labs',
                           ),
                           label: "YouTube",
+                          color: Colors.red,
                         ),
                         const SizedBox(width: 24),
                         _SocialIcon(
-                          Icons.business_center_rounded,
+                          Icons.business_center,
+                          color: Colors.blue,
                           () => _launchURL(
                             'https://www.linkedin.com/company/balance-life-ledger',
                           ),
@@ -151,7 +153,7 @@ class Footer extends StatelessWidget {
               GestureDetector(
                 onTap: () => _pushRoute(context, '/contact'),
                 child: Text(
-                  'Contact support: hello@balancelabs.inc',
+                  'Contact support: info@anakramy.com',
                   style: TextStyle(
                     color: BalanceColors.textSecondary,
                     fontSize: 14,
@@ -172,10 +174,10 @@ class Footer extends StatelessWidget {
         onTap: () => _pushRoute(context, '/home'),
         child: Row(
           children: [
-            Image.asset('assets/ledger_logo.png', height: 30),
+            Image.asset('assets/logo.png', height: 30),
             const SizedBox(width: 12),
             const Text(
-              'BALANCE',
+              'BALANCE LABS',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -281,9 +283,10 @@ class _StoreBadge extends StatelessWidget {
 
 class _SocialIcon extends StatelessWidget {
   final IconData icon;
+  final Color color;
   final VoidCallback onTap;
   final String label;
-  const _SocialIcon(this.icon, this.onTap, {required this.label});
+  const _SocialIcon(this.icon, this.onTap, {required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -293,7 +296,7 @@ class _SocialIcon extends StatelessWidget {
         onTap: onTap,
         child: Tooltip(
           message: label,
-          child: Icon(icon, color: Colors.white70, size: 32),
+          child: Icon(icon, color: color, size: 32),
         ),
       ),
     );

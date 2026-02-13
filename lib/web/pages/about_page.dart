@@ -136,7 +136,7 @@ class _AboutPageState extends State<AboutPage> {
             child: Column(
               children: [
                 const Icon(
-                  Icons.auto_awesome,
+                  Icons.mobile_friendly_outlined,
                   color: Colors.amberAccent,
                   size: 32,
                 ),

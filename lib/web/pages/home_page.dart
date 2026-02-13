@@ -102,6 +102,10 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+
+            // --- TESTIMONIALS SECTION ---
+            _buildTestimonialsSection(isMobile),
+
             const Footer(),
           ],
         ),
@@ -187,15 +191,11 @@ class _HomePageState extends State<HomePage> {
       ],
     );
 
-    // THE UI SHOWCASE WRAPPER (Device Mockup Style)
     Widget uiContent = Center(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 340,
-          maxHeight: 680,
-        ), // Mobile Screen Ratio
+        constraints: const BoxConstraints(maxWidth: 340, maxHeight: 680),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40), // Phone-like rounded corners
+          borderRadius: BorderRadius.circular(40),
           border: Border.all(color: Colors.white.withOpacity(0.1), width: 8),
           boxShadow: [
             BoxShadow(
@@ -226,6 +226,162 @@ class _HomePageState extends State<HomePage> {
         if (!isReversed) const SizedBox(width: 100),
         if (!isReversed) Expanded(child: uiContent),
       ],
+    );
+  }
+
+  Widget _buildTestimonialsSection(bool isMobile) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        vertical: 100,
+        horizontal: isMobile ? 24 : 80,
+      ),
+      child: Column(
+        children: [
+          const Text(
+            "User Stories",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 42,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            "Real experiences from people finding their balance.",
+            style: TextStyle(color: Colors.white38, fontSize: 18),
+          ),
+          const SizedBox(height: 80),
+          Wrap(
+            spacing: 24,
+            runSpacing: 24,
+            alignment: WrapAlignment.center,
+            children: [
+              _ReviewCard(
+                name: "SHRILAKSHMI",
+                date: "February 3, 2026",
+                review:
+                    "This app is clean, calm, and actually useful. I love how it combines goals, mood tracking, quick reflection, and a simple streak system without overwhelming me. The life balance chart is eye-opening — shows me where I'm slacking (usually self-care 😅). Offline mode works perfectly, no ads, feels premium even though it's free. Been using it daily for 2 weeks and it's already helping me end days feeling more grounded.",
+                isMobile: isMobile,
+              ),
+              _ReviewCard(
+                name: "Koushik N R",
+                date: "January 30, 2026",
+                review:
+                    "Powerful Insights from Simple Daily Check-ins. The power of Balance is in translating short daily inputs into long-term insight. The correlation between my mood scores and my self-care ratings was an eye-opener. The radar chart of Work-Family-Self-Care balance is a unique and invaluable feature. The Goals integration is smart.",
+                isMobile: isMobile,
+              ),
+              _ReviewCard(
+                name: "Akshatha Bhat",
+                date: "January 30, 2026",
+                review:
+                    "Finally, An App That Connects Goals to Daily Life. As someone focused on growth, Balance is a game-changer. The integrated Goals feature my professional and personal objectives are part of my daily review, not lost in a separate app. The visual charts on my Dashboard show me if I'm neglecting self-care while chasing work goals.",
+                isMobile: isMobile,
+              ),
+              _ReviewCard(
+                name: "Deepak Shamsunder",
+                date: "January 30, 2026",
+                review:
+                    "A Truly Integrated System for Mindful Living. I've tried many journal and habit apps, but Balance is the first to seamlessly connect everything. The guided daily check-in takes only minutes and perfectly structures reflection on priorities, gratitude, and mood. What makes it special is how it visually connects this to your life balance.",
+                isMobile: isMobile,
+              ),
+              _ReviewCard(
+                name: "kaveri pawar",
+                date: "January 31, 2026",
+                review:
+                    "Finally an app that actually helps me see if my life is balanced 😅 Love the 3-step evening check-in — takes 3 minutes but feels meaningful. Streaks keep me coming back, mood mosaic is super cool to spot patterns. Offline mode is a lifesaver. 10/10 keep it free 🙏",
+                isMobile: isMobile,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReviewCard extends StatelessWidget {
+  final String name;
+  final String date;
+  final String review;
+  final bool isMobile;
+
+  const _ReviewCard({
+    required this.name,
+    required this.date,
+    required this.review,
+    required this.isMobile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: isMobile ? double.infinity : 400,
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.03),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: BalanceColors.ledgerPrimary.withOpacity(0.2),
+                child: Text(
+                  name[0].toUpperCase(),
+                  style: TextStyle(color: BalanceColors.ledgerPrimary),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      date,
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: List.generate(
+              5,
+              (index) => const Icon(
+                Icons.star_rounded,
+                color: Color(0xFFFFD700),
+                size: 20,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            review,
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: 15,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
